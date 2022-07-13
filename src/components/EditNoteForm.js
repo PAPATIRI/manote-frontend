@@ -11,7 +11,7 @@ const EditNoteForm = () => {
         </FormGroup>
         <FormGroup>
           <Label>Catatan:</Label>
-          <TextArea placeholder="tambahkan catatan" />
+          <TextArea placeholder="tambahkan catatan" rows="12" />
         </FormGroup>
         <FormGroup>
           <Button>Simpan Perubahan</Button>
