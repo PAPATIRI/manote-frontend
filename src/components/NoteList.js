@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const NotesListContainer = styled.div`
@@ -23,7 +24,7 @@ const NotesList = () => {
 
   const listItems = notes.map((note) => (
     <ListItem key={note.id}>
-      <h4>{note.title}</h4>
+      <Link to={`/edit/${note.id}`}>{note.title}</Link>
     </ListItem>
   ));
 
