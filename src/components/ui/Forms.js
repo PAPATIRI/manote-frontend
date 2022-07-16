@@ -25,4 +25,4 @@ const TextArea = styled.textarea`
   resize: none;
 `;
 
-export { Form, FormGroup, Label, Input, TextArea };
+export {Form, FormGroup, Label, Input, TextArea};

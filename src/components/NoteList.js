@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import getLocalStorageData from '../utils/getLocalStorageData';
 
 const NotesListContainer = styled.div`
   display: flex;
@@ -18,13 +19,24 @@ const List = styled.ul`
 const ListItem = styled.li`
   margin: 0.5rem;
 `;
-const NotesList = () => {
-  const existing = localStorage.getItem('notes');
-  const notes = existing ? JSON.parse(existing) : [];
+
+const Separator = styled.hr`
+  width: 90%;
+  margin: -1px;
+  background-color: #edf2f7;
+  color: #edf2f7;
+`;
+
+function NotesList() {
+  const notes = getLocalStorageData('notes');
 
   const listItems = notes.map((note) => (
     <ListItem key={note.id}>
-      <Link to={`/edit/${note.id}`}>{note.title}</Link>
+      <h4>
+        <Link to={`/edit/${note.id}`}>{note.title}</Link>
+      </h4>
+      <p>{note.note.slice(0, 101)}</p>
+      <Separator />
     </ListItem>
   ));
 
@@ -33,6 +45,6 @@ const NotesList = () => {
       <List>{listItems}</List>
     </NotesListContainer>
   );
-};
+}
 
 export default NotesList;

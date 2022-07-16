@@ -6,7 +6,7 @@ const Container = styled.div`
   min-height: 10vh;
 `;
 
-const Footer = () => {
+function Footer() {
   return (
     <Container>
       <p>

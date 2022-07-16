@@ -12,7 +12,7 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const Header = () => {
+function Header() {
   return (
     <Container>
       <Image src={logo} />

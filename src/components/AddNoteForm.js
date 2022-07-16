@@ -1,10 +1,15 @@
-import { Form, FormGroup, Input, Label, TextArea } from '../components/ui/Forms';
-import Button from '../components/ui/Button';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
+import { Form, FormGroup, Input, Label, TextArea } from './ui/Forms';
+import Button from './ui/Button';
+import getLocalStorageData from '../utils/getLocalStorageData';
+import Message from './ui/Message';
 
-const AddNoteForm = () => {
+function AddNoteForm() {
   const [state, setState] = useState({ title: '', note: '' });
+  const [isSuccess, setIsSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleTitleChange = (e) => {
     setState({ ...state, title: e.target.value });
@@ -14,13 +19,16 @@ const AddNoteForm = () => {
   };
 
   const handleSubmit = (e) => {
-    let existing = localStorage.getItem('notes');
-    existing = existing ? JSON.parse(existing) : [];
-
+    const notes = getLocalStorageData('notes');
     const noteId = uuidv4();
-    existing.push({ ...state, id: noteId });
 
-    localStorage.setItem('notes', JSON.stringify(existing));
+    notes.push({ ...state, id: noteId });
+
+    localStorage.setItem('notes', JSON.stringify(notes));
+    setIsSuccess(true);
+    setTimeout(() => {
+      navigate('/');
+    }, 1000);
     e.preventDefault();
   };
 
@@ -28,6 +36,8 @@ const AddNoteForm = () => {
 
   return (
     <>
+      {isSuccess && <Message text="data berhasil disimpan" />}
+
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Judul</Label>
@@ -43,6 +53,6 @@ const AddNoteForm = () => {
       </Form>
     </>
   );
-};
+}
 
 export default AddNoteForm;
