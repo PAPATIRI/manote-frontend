@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormGroup, Input, Label, TextArea } from './ui/Forms';
 import Button from './ui/Button';
-import getLocalStorageData from '../utils/getLocalStorageData';
 import Message from './ui/Message';
 
 function AddNoteForm() {
@@ -19,16 +17,21 @@ function AddNoteForm() {
   };
 
   const handleSubmit = (e) => {
-    const notes = getLocalStorageData('notes');
-    const noteId = uuidv4();
-
-    notes.push({ ...state, id: noteId });
-
-    localStorage.setItem('notes', JSON.stringify(notes));
-    setIsSuccess(true);
-    setTimeout(() => {
-      navigate('/');
-    }, 1000);
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    };
+    async function addData() {
+      const response = await fetch('http://localhost:3001/api/note', options);
+      if (response.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      }
+    }
+    addData();
     e.preventDefault();
   };
 
