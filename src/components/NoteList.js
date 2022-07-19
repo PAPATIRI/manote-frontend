@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import getLocalStorageData from '../utils/getLocalStorageData';
+import { useEffect, useState } from 'react';
+// import getLocalStorageData from '../utils/getLocalStorageData';
 
 const NotesListContainer = styled.div`
   display: flex;
@@ -28,17 +29,39 @@ const Separator = styled.hr`
 `;
 
 function NotesList() {
-  const notes = getLocalStorageData('notes');
+  const [notes, setNotes] = useState([]);
 
-  const listItems = notes.map((note) => (
-    <ListItem key={note.id}>
-      <h4>
-        <Link to={`/edit/${note.id}`}>{note.title}</Link>
-      </h4>
-      <p>{note.note.slice(0, 101)}</p>
-      <Separator />
-    </ListItem>
-  ));
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/notes', {
+        method: 'GET',
+        headers: {
+          accept: 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      setNotes(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const listItems =
+    notes &&
+    notes.map((note) => (
+      <ListItem key={note._id}>
+        <h4>
+          <Link to={`/edit/${note._id}`}>{note.title}</Link>
+        </h4>
+        <p>{note.note.slice(0, 101)}</p>
+        <Separator />
+      </ListItem>
+    ));
 
   return (
     <NotesListContainer>

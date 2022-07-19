@@ -6,6 +6,8 @@
     "fetch": true
   },
   "rules": {
+    "no-underscore-dangle": "off",
+    "no-console": "off",
     "no-shadow": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-uses-react": "off",

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Add from './pages/Add';
@@ -9,6 +10,8 @@ const Container = styled.div`
 `;
 
 function App() {
+  const [state, setState] = useState([]);
+
   return (
     <Container>
       <BrowserRouter>
