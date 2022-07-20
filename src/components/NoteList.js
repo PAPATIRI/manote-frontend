@@ -33,7 +33,7 @@ function NotesList() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/notes', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notes`, {
         method: 'GET',
         headers: {
           accept: 'application/json'

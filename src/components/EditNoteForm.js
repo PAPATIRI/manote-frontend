@@ -51,7 +51,7 @@ function EditNoteForm() {
     };
 
     async function submitData() {
-      const response = await fetch(`http://localhost:3001/api/note/${currentNote._id}`, options);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, options);
       if (response.ok) {
         setIsSuccess(true);
       }
@@ -68,7 +68,7 @@ function EditNoteForm() {
       headers: { 'Content-Type': 'application/json' }
     };
     async function deleteData() {
-      const response = await fetch(`http://localhost:3001/api/note/${currentNote._id}`, options);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, options);
       if (response.ok) {
         navigate('/');
       }

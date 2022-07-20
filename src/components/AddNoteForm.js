@@ -36,7 +36,7 @@ function AddNoteForm() {
     };
 
     async function addData() {
-      const response = await fetch('http://localhost:3001/api/note', options);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note`, options);
       if (response.ok) {
         setIsSuccess(true);
         setTimeout(() => {
