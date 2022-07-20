@@ -1,26 +1,37 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from './ui/Button';
 import { Form, Input, FormGroup, Label, TextArea } from './ui/Forms';
-import getLocalStorageData from '../utils/getLocalStorageData';
+import Message from './ui/Message';
+
+function InfoWrapper(props) {
+  const { status } = props;
+
+  if (status !== null) {
+    if (status === false) {
+      return <Message type="error" text="Title dan Note harus diisi!" />;
+    }
+    return <Message type="success" text="Data berhasil disimpan" />;
+  }
+}
 
 function EditNoteForm() {
   const location = useLocation(); // get url dari page saat ini
   // state for handler
-  const [allNotes, setAllNotes] = useState(null);
   const [currentNote, setCurrentNote] = useState({ title: '', note: '' });
-  // usenavigate to delete data localstorage
+  const [isSuccess, setIsSuccess] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const notes = getLocalStorageData('notes');
-
-    setAllNotes(notes);
-
     const noteId = location.pathname.replace('/edit/', '');
-    const curNote = notes.filter((note) => note.id === noteId);
 
-    setCurrentNote(curNote[0]);
+    async function fetchData() {
+      const response = await fetch(`http://localhost:3001/api/note/${noteId}`);
+      const data = await response.json();
+      setCurrentNote(data);
+    }
+    fetchData();
   }, []);
 
   // input text handler
@@ -33,46 +44,66 @@ function EditNoteForm() {
 
   // submit handler
   const handleSubmit = (e) => {
-    const newNotes = allNotes.map((note) => {
-      if (note.id === currentNote.id) {
-        return { ...note, title: currentNote.title, note: currentNote.note };
+    const options = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(currentNote)
+    };
+
+    async function submitData() {
+      const response = await fetch(`http://localhost:3001/api/note/${currentNote._id}`, options);
+      if (response.ok) {
+        setIsSuccess(true);
       }
-      return note;
-    });
-    localStorage.setItem('notes', JSON.stringify(newNotes));
+    }
+
+    submitData();
     e.preventDefault();
   };
 
   // handle delete note
   const handleDeleteNote = () => {
-    const newNotes = allNotes.filter((note) => note.id !== currentNote.id);
-    setCurrentNote(null);
-    setAllNotes(newNotes);
+    const options = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    };
+    async function deleteData() {
+      const response = await fetch(`http://localhost:3001/api/note/${currentNote._id}`, options);
+      if (response.ok) {
+        navigate('/');
+      }
+    }
 
-    localStorage.setItem('notes', JSON.stringify(newNotes));
-    navigate('/');
+    deleteData();
   };
 
   const { title, note } = currentNote;
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormGroup>
-        <Label>Judul:</Label>
-        <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul" />
-      </FormGroup>
-      <FormGroup>
-        <Label>Catatan:</Label>
-        <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan" rows="12" />
-      </FormGroup>
-      <FormGroup>
-        <Button type="submit">Simpan Perubahan</Button>
-        <Button danger onClick={handleDeleteNote}>
-          Delete
-        </Button>
-      </FormGroup>
-    </Form>
+    <>
+      <InfoWrapper status={isSuccess} />
+      <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label>Judul:</Label>
+          <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul" />
+        </FormGroup>
+        <FormGroup>
+          <Label>Catatan:</Label>
+          <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan" rows="12" />
+        </FormGroup>
+        <FormGroup>
+          <Button type="submit">Simpan Perubahan</Button>
+          <Button danger onClick={handleDeleteNote}>
+            Delete
+          </Button>
+        </FormGroup>
+      </Form>
+    </>
   );
 }
 
 export default EditNoteForm;
+
+InfoWrapper.propTypes = {
+  status: PropTypes.node.isRequired
+};
