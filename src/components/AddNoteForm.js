@@ -18,7 +18,7 @@ function InfoWrapper(props) {
 
 function AddNoteForm() {
   const [state, setState] = useState({ title: '', note: '' });
-  const [isSuccess, setIsSuccess] = useState(undefined);
+  const [isSuccess, setIsSuccess] = useState(null);
   const navigate = useNavigate();
 
   const handleTitleChange = (e) => {
