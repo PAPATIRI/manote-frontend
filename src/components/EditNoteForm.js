@@ -27,7 +27,7 @@ function EditNoteForm() {
     const noteId = location.pathname.replace('/edit/', '');
 
     async function fetchData() {
-      const response = await fetch(`http://localhost:3001/api/note/${noteId}`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${noteId}`);
       const data = await response.json();
       setCurrentNote(data);
     }
