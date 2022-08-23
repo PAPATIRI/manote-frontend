@@ -5,7 +5,12 @@
     "localStorage": true,
     "fetch": true
   },
+  "env": {
+    "commonjs": true,
+    "browser": true
+  },
   "rules": {
+    "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "no-console": "off",
     "no-shadow": "off",

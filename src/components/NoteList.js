@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-// import getLocalStorageData from '../utils/getLocalStorageData';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllNotes, fetchNotes } from '../features/notes/noteSlice';
 
 const NotesListContainer = styled.div`
   display: flex;
@@ -29,45 +30,41 @@ const Separator = styled.hr`
 `;
 
 function NotesList() {
-  const [notes, setNotes] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notes`, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json'
-        }
-      });
-
-      const data = await response.json();
-      setNotes(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const dispatch = useDispatch();
+  const notes = useSelector(getAllNotes);
+  const notesStatus = useSelector((state) => state.notes.status);
+  const error = useSelector((state) => state.notes.error);
+  console.log('data: ', notes);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (notesStatus === 'idle') {
+      dispatch(fetchNotes());
+    }
+  }, [notesStatus, dispatch]);
 
-  const listItems =
-    notes &&
-    notes.map((note) => (
-      <ListItem key={note._id}>
-        <h4>
-          <Link to={`/edit/${note._id}`}>{note.title}</Link>
-        </h4>
-        <p>{note.note.slice(0, 101)}</p>
-        <Separator />
-      </ListItem>
-    ));
+  let content;
 
-  return (
-    <NotesListContainer>
-      <List>{listItems}</List>
-    </NotesListContainer>
-  );
+  if (notesStatus === 'loading') {
+    content = <div>Loading...</div>;
+  } else if (notesStatus === 'succeeded') {
+    content = (
+      <List>
+        {notes.map((note) => (
+          <ListItem key={note._id}>
+            <h4>
+              <Link to={`/edit/${note._id}`}>{note.title}</Link>
+            </h4>
+            <p>{note.note.slice(0, 101)}</p>
+            <Separator />
+          </ListItem>
+        ))}
+      </List>
+    );
+  } else if (notesStatus === 'failed') {
+    content = <div>{error}</div>;
+  }
+
+  return <NotesListContainer>{content}</NotesListContainer>;
 }
 
 export default NotesList;
