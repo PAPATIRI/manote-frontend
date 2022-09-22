@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { unwrapResult } from '@reduxjs/toolkit';
 import Button from './ui/Button';
 import { Form, Input, FormGroup, Label, TextArea } from './ui/Forms';
 import Message from './ui/Message';
+import { getNoteById, statusReset, updateExistingNote } from '../features/notes/noteSlice';
 
 function InfoWrapper(props) {
   const { status } = props;
@@ -19,46 +22,39 @@ function InfoWrapper(props) {
 function EditNoteForm() {
   const location = useLocation(); // get url dari page saat ini
   // state for handler
-  const [currentNote, setCurrentNote] = useState({ title: '', note: '' });
+  const noteId = location.pathname.replace('/edit/', '');
+  const currentNote = useSelector((data) => getNoteById(data, noteId));
+  const [state, setState] = useState(currentNote);
   const [isSuccess, setIsSuccess] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const noteId = location.pathname.replace('/edit/', '');
-
-    async function fetchData() {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${noteId}`);
-      const data = await response.json();
-      setCurrentNote(data);
-    }
-    fetchData();
-  }, []);
+  const dispatch = useDispatch();
 
   // input text handler
   const handleTitleChange = (e) => {
-    setCurrentNote({ ...currentNote, title: e.target.value });
+    setState({ ...state, title: e.target.value });
   };
   const handleNoteChange = (e) => {
-    setCurrentNote({ ...currentNote, note: e.target.value });
+    setState({ ...state, note: e.target.value });
   };
 
   // submit handler
-  const handleSubmit = (e) => {
-    const options = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(currentNote)
-    };
-
-    async function submitData() {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, options);
-      if (response.ok) {
-        setIsSuccess(true);
-      }
-    }
-
-    submitData();
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const actionResult = await dispatch(updateExistingNote(state));
+      const result = unwrapResult(actionResult);
+      if (result) {
+        setIsSuccess(true);
+      } else {
+        setIsSuccess(false);
+      }
+    } catch (error) {
+      console.error('terjadi kesalahan', error);
+      setIsSuccess(false);
+    } finally {
+      dispatch(statusReset());
+    }
   };
 
   // handle delete note
@@ -71,13 +67,14 @@ function EditNoteForm() {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, options);
       if (response.ok) {
         navigate('/');
+
+        dispatch(statusReset());
       }
     }
-
     deleteData();
   };
 
-  const { title, note } = currentNote;
+  const { title, note } = state;
 
   return (
     <>

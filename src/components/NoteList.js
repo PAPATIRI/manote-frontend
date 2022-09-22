@@ -34,7 +34,6 @@ function NotesList() {
   const notes = useSelector(getAllNotes);
   const notesStatus = useSelector((state) => state.notes.status);
   const error = useSelector((state) => state.notes.error);
-  console.log('data: ', notes);
 
   useEffect(() => {
     if (notesStatus === 'idle') {

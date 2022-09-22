@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { Form, FormGroup, Input, Label, TextArea } from './ui/Forms';
 import Button from './ui/Button';
 import Message from './ui/Message';
+import { addNewNote, statusReset } from '../features/notes/noteSlice';
 
 function InfoWrapper(props) {
   const { status } = props;
@@ -18,8 +21,9 @@ function InfoWrapper(props) {
 
 function AddNoteForm() {
   const [state, setState] = useState({ title: '', note: '' });
-  const [isSuccess, setIsSuccess] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleTitleChange = (e) => {
     setState({ ...state, title: e.target.value });
@@ -28,26 +32,26 @@ function AddNoteForm() {
     setState({ ...state, note: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state)
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    async function addData() {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note`, options);
-      if (response.ok) {
+    try {
+      const actionResult = await dispatch(addNewNote(state));
+      const result = unwrapResult(actionResult);
+      console.log('new added note: ', result);
+
+      if (result) {
         setIsSuccess(true);
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
+        navigate('/');
       } else {
         setIsSuccess(false);
       }
+    } catch (err) {
+      console.error('terjadi kesalahan: ', err);
+      setIsSuccess(false);
+    } finally {
+      dispatch(statusReset());
     }
-    addData();
-    e.preventDefault();
   };
 
   const { title, note } = state;
