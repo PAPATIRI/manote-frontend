@@ -1,17 +1,10 @@
 import PropTypes from 'prop-types';
+import tw, { styled } from 'twin.macro';
 
-const { default: styled } = require('styled-components');
-
-const MessageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0.5rem;
-  padding: 0 1rem;
-  border: 2px solid ${(props) => (props === 'danger' ? '#f56565' : '#68d391')};
-  border-radius: 8px;
-`;
+const MessageContainer = styled.div(({ danger }) => [
+  danger ? tw`border-red-500` : tw`border-green-500`,
+  tw`flex flex-col items-center justify-center m-4 p-4 border-2 rounded`
+]);
 
 export default function Message(props) {
   const { type, text } = props;

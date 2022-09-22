@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { unwrapResult } from '@reduxjs/toolkit';
 import Button from './ui/Button';
-import { Form, Input, FormGroup, Label, TextArea } from './ui/Forms';
+import { Form, Input, FormGroup, TextArea } from './ui/Forms';
 import Message from './ui/Message';
 import { deleteNote, getNoteById, statusReset, updateExistingNote } from '../features/notes/noteSlice';
 
@@ -84,12 +84,10 @@ function EditNoteForm() {
       <InfoWrapper status={isSuccess} />
       <Form onSubmit={handleSubmit}>
         <FormGroup>
-          <Label>Judul:</Label>
-          <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul" />
+          <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul..." />
         </FormGroup>
         <FormGroup>
-          <Label>Catatan:</Label>
-          <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan" rows="12" />
+          <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan..." rows="12" />
         </FormGroup>
         <FormGroup>
           <Button type="submit">Simpan Perubahan</Button>

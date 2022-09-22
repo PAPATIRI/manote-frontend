@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { Form, FormGroup, Input, Label, TextArea } from './ui/Forms';
+import { Form, FormButtonGroup, FormGroup, Input, TextArea } from './ui/Forms';
 import Button from './ui/Button';
 import Message from './ui/Message';
 import { addNewNote, statusReset } from '../features/notes/noteSlice';
@@ -21,7 +21,7 @@ function InfoWrapper(props) {
 
 function AddNoteForm() {
   const [state, setState] = useState({ title: '', note: '' });
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -61,16 +61,14 @@ function AddNoteForm() {
       <InfoWrapper status={isSuccess} />
       <Form onSubmit={handleSubmit}>
         <FormGroup>
-          <Label>Judul</Label>
-          <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul" />
+          <Input type="text" name="title" value={title} onChange={handleTitleChange} placeholder="tambahkan judul..." />
         </FormGroup>
         <FormGroup>
-          <Label>Catatan</Label>
-          <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan" rows="12" />
+          <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan..." rows="12" />
         </FormGroup>
-        <FormGroup>
+        <FormButtonGroup>
           <Button type="submit">Tambah catatan</Button>
-        </FormGroup>
+        </FormButtonGroup>
       </Form>
     </>
   );

@@ -1,9 +1,7 @@
-import styled from 'styled-components';
+import tw from 'twin.macro';
 
-const Container = styled.div`
-  margin: 1rem;
-  padding: 0.5rem;
-  min-height: 10vh;
+const Container = tw.div`
+m-4 p-2
 `;
 
 function Footer() {
@@ -14,6 +12,6 @@ function Footer() {
       </p>
     </Container>
   );
-};
+}
 
 export default Footer;

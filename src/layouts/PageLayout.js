@@ -1,18 +1,21 @@
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import tw from 'twin.macro';
 import Footer from '../components/shared/Footer';
 import Header from '../components/shared/Header';
 
+const PageContainer = tw.div`max-w-7xl mx-auto px-4 sm:px-6`;
+
 export default function PageLayout(props) {
-  const {children} = props;
+  const { children } = props;
   return (
-    <>
-      <Header />
-      {children}
-      <Footer />
-    </>
+    <PageContainer>
+        <Header />
+        {children}
+        <Footer />
+      </PageContainer>
   );
 }
 
 PageLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-}
+  children: PropTypes.node.isRequired
+};
