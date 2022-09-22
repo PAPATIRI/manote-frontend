@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/images/logomanote.png';
 import Button from '../ui/Button';
 
@@ -30,7 +31,9 @@ function Header() {
       <Img src={logo} alt="logo" />
       <Heading>Manote</Heading>
       <Menu>
-        <Button>Tambah Note</Button>
+        <Link to="/add">
+          <Button>Tambah Note</Button>
+        </Link>
       </Menu>
     </Navigation>
   );

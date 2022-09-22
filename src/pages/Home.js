@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <PageLayout>
       <Container>
-        <NoteList>All Notes</NoteList>
+        <NoteList />
       </Container>
     </PageLayout>
   );

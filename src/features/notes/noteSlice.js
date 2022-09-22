@@ -60,6 +60,15 @@ export const deleteNote = createAsyncThunk('notes/deleteNote', async (currentNot
   return null;
 });
 
+// filter data state based on keyword
+export const getFilteredNotes = (state, keyword) => {
+  if (keyword) {
+    const isKeywordExist = (array, string) => array.toLowerCase().includes(string);
+    return state.notes.data.filter((note) => isKeywordExist(note.note, keyword) || isKeywordExist(note.title, keyword));
+  }
+  return state.notes.data;
+};
+
 // create slice for notelist
 const notesSlice = createSlice({
   name: 'notes',

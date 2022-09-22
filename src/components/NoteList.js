@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import tw from 'twin.macro';
-import { getAllNotes, fetchNotes } from '../features/notes/noteSlice';
+import { fetchNotes, getFilteredNotes } from '../features/notes/noteSlice';
+import Container from './ui/Container';
 
 const NotesListContainer = tw.div`
 grid grid-cols-1 md:grid-cols-3 gap-4 my-8
@@ -16,9 +17,16 @@ const Title = tw.h4`
 text-lg font-semibold text-purple-900
 `;
 
+const SearchBar = tw.input`
+my-4 p-2 
+text-left border rounded 
+focus:outline-none focus:ring focus:border-blue-300
+`;
+
 function NotesList() {
+  const [keyword, setKeyword] = useState('');
   const dispatch = useDispatch();
-  const notes = useSelector(getAllNotes);
+  const notes = useSelector((state) => getFilteredNotes(state, keyword));
   const notesStatus = useSelector((state) => state.notes.status);
   const error = useSelector((state) => state.notes.error);
 
@@ -28,14 +36,18 @@ function NotesList() {
     }
   }, [notesStatus, dispatch]);
 
+  const handleChange = (e) => {
+    setKeyword(e.target.value);
+  };
+
   let content;
 
   if (notesStatus === 'loading') {
     content = <div>Loading...</div>;
   } else if (notesStatus === 'succeeded') {
     content = notes.map((note) => (
-      <Card>
-        <Title key={note._id}>
+      <Card key={note._id}>
+        <Title>
           <Link to={`/edit/${note._id}`}>{note.title}</Link>
         </Title>
         <p>{note.note.slice(0, 101)}</p>
@@ -45,7 +57,12 @@ function NotesList() {
     content = <div>{error}</div>;
   }
 
-  return <NotesListContainer>{content}</NotesListContainer>;
+  return (
+    <Container>
+      <SearchBar onChange={handleChange} placeholder="search notes..." />
+      <NotesListContainer>{content}</NotesListContainer>;
+    </Container>
+  );
 }
 
 export default NotesList;
