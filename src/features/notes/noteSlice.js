@@ -46,6 +46,20 @@ export const updateExistingNote = createAsyncThunk('notes/updateNote', async (cu
   return null;
 });
 
+// delete note
+export const deleteNote = createAsyncThunk('notes/deleteNote', async (currentNote) => {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' }
+  };
+
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, requestOptions);
+  if (response.ok) {
+    return currentNote;
+  }
+  return null;
+});
+
 // create slice for notelist
 const notesSlice = createSlice({
   name: 'notes',
@@ -93,6 +107,15 @@ const notesSlice = createSlice({
     [updateExistingNote.rejected]: (state, action) => {
       state.status = 'failed';
       state.error = action.error.message;
+    },
+    [deleteNote.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [deleteNote.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      const { _id } = action.payload;
+      const updatedNote = state.data.filter((note) => note._id === _id);
+      state.data = updatedNote;
     }
   }
 });

@@ -6,7 +6,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import Button from './ui/Button';
 import { Form, Input, FormGroup, Label, TextArea } from './ui/Forms';
 import Message from './ui/Message';
-import { getNoteById, statusReset, updateExistingNote } from '../features/notes/noteSlice';
+import { deleteNote, getNoteById, statusReset, updateExistingNote } from '../features/notes/noteSlice';
 
 function InfoWrapper(props) {
   const { status } = props;
@@ -58,20 +58,23 @@ function EditNoteForm() {
   };
 
   // handle delete note
-  const handleDeleteNote = () => {
-    const options = {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' }
-    };
-    async function deleteData() {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/note/${currentNote._id}`, options);
-      if (response.ok) {
-        navigate('/');
-
-        dispatch(statusReset());
+  const handleDeleteNote = async (e) => {
+    e.preventDefault();
+    try {
+      const actionResult = await dispatch(deleteNote(state));
+      const result = unwrapResult(actionResult);
+      if (result) {
+        setIsSuccess(true);
+      } else {
+        setIsSuccess(false);
       }
+    } catch (error) {
+      console.error('terjadi kesalahan: ', error);
+      setIsSuccess(false);
+    } finally {
+      dispatch(statusReset());
+      navigate('/');
     }
-    deleteData();
   };
 
   const { title, note } = state;
