@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { unwrapResult } from '@reduxjs/toolkit';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Button from './ui/Button';
 import { Form, Input, FormGroup, TextArea } from './ui/Forms';
 import Message from './ui/Message';
@@ -90,9 +92,13 @@ function EditNoteForm() {
           <TextArea value={note} onChange={handleNoteChange} placeholder="tambahkan catatan..." rows="12" />
         </FormGroup>
         <FormGroup>
-          <Button type="submit">Simpan Perubahan</Button>
+          <Button type="submit">
+            <SaveIcon />
+            &nbsp;Simpan Perubahan
+          </Button>
           <Button danger onClick={handleDeleteNote}>
-            Delete
+            <DeleteIcon />
+            &nbsp;Delete
           </Button>
         </FormGroup>
       </Form>

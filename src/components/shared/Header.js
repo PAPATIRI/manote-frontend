@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { Link } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
 import logo from '../../assets/images/logomanote.png';
 import Button from '../ui/Button';
 
@@ -32,7 +33,10 @@ function Header() {
       <Heading>Manote</Heading>
       <Menu>
         <Link to="/add">
-          <Button>Tambah Note</Button>
+          <Button>
+            <AddIcon />
+            Tambah Note
+          </Button>
         </Link>
       </Menu>
     </Navigation>

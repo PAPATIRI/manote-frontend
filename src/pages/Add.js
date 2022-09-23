@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddNoteForm from '../components/AddNoteForm';
 import Container from '../components/ui/Container';
 import { HomeLink, Title } from '../components/ui/HomeLink';
@@ -10,7 +11,10 @@ export default function Add() {
       <Container>
         <HomeLink>
           <Title>
-            <Link to="/">Back</Link>
+            <Link to="/">
+              <ArrowBackIcon />
+              &nbsp; Back
+            </Link>
           </Title>
         </HomeLink>
         <AddNoteForm />
